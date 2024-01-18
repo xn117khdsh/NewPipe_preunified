@@ -65,10 +65,8 @@ import io.reactivex.plugins.RxJavaPlugins;
 
 public class App extends MultiDexApplication {
     protected static final String TAG = App.class.toString();
-    @SuppressWarnings("unchecked")
-    private static final Class<? extends ReportSenderFactory>[]
-            REPORT_SENDER_FACTORY_CLASSES = new Class[]{AcraReportSenderFactory.class};
     private static App app;
+    public static final String PACKAGE_NAME = BuildConfig.APPLICATION_ID;
 
     public static App getApp() {
         return app;
@@ -77,7 +75,6 @@ public class App extends MultiDexApplication {
     @Override
     protected void attachBaseContext(final Context base) {
         super.attachBaseContext(base);
-
         initACRA();
     }
 
@@ -106,7 +103,7 @@ public class App extends MultiDexApplication {
         configureRxJavaErrorHandler();
 
         // Check for new version
-        new CheckForNewAppVersionTask().execute();
+        //new CheckForNewAppVersionTask().execute();
     }
 
     protected Downloader getDownloader() {
@@ -119,7 +116,7 @@ public class App extends MultiDexApplication {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(
                 getApplicationContext());
         final String key = getApplicationContext().getString(R.string.recaptcha_cookies_key);
-        downloader.setCookie(ReCaptchaActivity.RECAPTCHA_COOKIES_KEY, prefs.getString(key, ""));
+        downloader.setCookie(ReCaptchaActivity.RECAPTCHA_COOKIES_KEY, prefs.getString(key, null));
         downloader.updateYoutubeRestrictedModeCookies(getApplicationContext());
     }
 
@@ -200,10 +197,13 @@ public class App extends MultiDexApplication {
                 .build();
     }
 
-    private void initACRA() {
+    /**
+     * Called in {@link #attachBaseContext(Context)} after calling the {@code super} method.
+     * Should be overridden if MultiDex is enabled, since it has to be initialized before ACRA.
+     */
+    protected void initACRA() {
         try {
             final CoreConfiguration acraConfig = new CoreConfigurationBuilder(this)
-                    .setReportSenderFactoryClasses(REPORT_SENDER_FACTORY_CLASSES)
                     .setBuildConfigClass(BuildConfig.class)
                     .build();
             ACRA.init(this, acraConfig);

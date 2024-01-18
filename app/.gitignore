@@ -1,3 +1,21 @@
 .gitignore
+.gradle
+/local.properties
+.DS_Store
 /build
-*.iml
+/captures
+/app/app.iml
+/.idea
+/*.iml
+*~
+.weblate
+*.class
+/app/Release
+
+# vscode / eclipse files
+*.classpath
+*.project
+*.settings
+bin/
+.vscode/
+*.code-workspace
